@@ -60,7 +60,10 @@ public class QQServer {
                     message.setMesType(MessageType.MESSAGE_LOGIN_SUCCEED);
                     objectOutputStream.writeObject(message);
                     // 4. 创建线程和客户端保持通信
-
+                    ServerConnectClientThread serverConnectClientThread = new ServerConnectClientThread(socket, user.getUserId());
+                    serverConnectClientThread.start();
+                    // 5. 将线程放入到集合管理，方便后期获取用户列表、发送消息等
+                    ManageClientThreads.addClientThread(user.getUserId(), serverConnectClientThread);
                 } else {
                     // 5. 登录失败，返回相关的消息
                     message.setMesType(MessageType.MESSAGE_LOGIN_FAIL);
@@ -68,11 +71,8 @@ public class QQServer {
                     socket.close();
                 }
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }

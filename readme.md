@@ -57,7 +57,7 @@
 
 ## 退出系统
 
-首先分析一下原因：之前的退出只是退出main方法，还有一个线程ClientConnectServerThread还在继续运行，所以整个进程是没有退出的
+首先分析一下原因：之前的退出只是退出main方法，还有一个线程ClientConnectServerThread在继续运行，所以整个进程是没有退出的
 
 所以现在我们就要在客户端调用System.exit(0)退出，同时告诉服务端那哪个线程退出了（easy啦( •̀ ω •́ )y
 
@@ -65,10 +65,11 @@
 
 【客户端】
 
-1. QQView增加switch分支处理MESSAGE_CLIENT_EXIT
+1. QQView增加switch分支处理MESSAGE_CLIENT_EXIT，实现logout方法
 2. userClientService添加logout方法
    1. 和服务端发条消息
    2. 调用System.exit(0)退出
+
 
 【服务端】
 
@@ -78,3 +79,27 @@
    2. 关闭socket
 
 2. ManageClientThreads添加删除线程方法
+
+## 私聊
+
+也很简单滴啦，逻辑就是接收setter的message，在服务端转发到getter的socket，getter的客户端客户端收到这条message再进行处理就行【重点在于服务端由setter的socket转到getter的socket-->
+所以为什么一定要线程管理和线程管理集合】
+
+![image-20231027201324043](https://cdn.jsdelivr.net/gh/kixuan/PicGo/images/image-20231027201324043.png)
+
+【客户端】
+
+1. 新增MessageClientService类，新增sendMessageToOne方法
+
+    1. 构建message
+    2. 发送给服务端
+2. ClientConnectServerThread添加switch分支处理MESSAGE_RET_ONLINE_FRIEND
+2. QQView添加switch分支处理MESSAGE_RET_ONLINE_FRIEND，实现sendMessageToOne方法
+
+【服务端】
+
+1. ServerConnectClientThread添加switch分支处理MESSAGE_RET_ONLINE_FRIEND
+
+    1. 根据接收到的message获取getter的id及对应线程（使用ManageClientThreads啦）
+
+    2. 得到对应socket的对象输出流，将message对象转发给指定的客户端

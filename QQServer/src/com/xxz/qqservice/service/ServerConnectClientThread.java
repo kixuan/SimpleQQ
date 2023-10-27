@@ -2,6 +2,7 @@ package com.xxz.qqservice.service;
 
 import com.xxz.common.Message;
 import com.xxz.common.MessageType;
+import lombok.Getter;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,6 +13,7 @@ import java.net.Socket;
  * @version 1.0
  * 【服务端】该线程用于和客户端保持通信
  */
+@Getter
 public class ServerConnectClientThread extends Thread {
     //该线程需要持有Socket
     private Socket socket;
@@ -37,6 +39,7 @@ public class ServerConnectClientThread extends Thread {
 
                 // 2. 根据读取到的消息类型进行下一步操作
                 switch (message.getMesType()) {
+                    // 显示在线列表用户信息
                     case MessageType.MESSAGE_GET_ONLINE_FRIEND:
                         String onlineUser = ManageClientThreads.getOnlineUser();
                         // 构建message把这个返回给客户端
@@ -51,6 +54,23 @@ public class ServerConnectClientThread extends Thread {
                         System.out.println(userId + "需要【在线用户列表】，服务端返回成功");
                         break;
 
+                    // 私聊
+                    case MessageType.MESSAGE_COMM_MES:
+                        System.out.println(userId + "对 " + message.getGetter() + "【私聊】");
+                        // 然后就要把这条消息转给getter服务器端的socket
+                        // 根据message获取getter的id及对应线程
+                        ServerConnectClientThread serverConnectClientThread = ManageClientThreads.getClientConnectServerThread(message.getGetter());
+                        // 如果该线程不存在，则给出提示
+                        if (serverConnectClientThread == null) {
+                            System.out.println(message.getGetter() + "不在线，离线留言功能暂未实现");
+                            break;
+                        }
+                        // 得到对应socket的对象输出流，将message对象转发给指定的客户端
+                        ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                        oos.writeObject(message);
+                        break;
+
+                    //  退出系统
                     case MessageType.MESSAGE_CLIENT_EXIT:
                         System.out.println(userId + " 【退出系统】");
                         // 从集合中删除该线程

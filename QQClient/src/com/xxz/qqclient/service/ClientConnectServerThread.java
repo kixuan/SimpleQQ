@@ -34,13 +34,16 @@ public class ClientConnectServerThread extends Thread {
                 // 2. 根据读取到的消息类型进行下一步操作
                 switch (message.getMesType()) {
                     //显示在线列表用户信息
-                    case MessageType.MESSAGE_RET_ONLINE_FRIEND:
+                    case MessageType.MESSAGE_RET_ONLINE_FRIEND -> {
                         System.out.println("\n=======当前在线用户列表========");
                         String[] onlineUsers = message.getContent().split(" ");
                         for (String onlineUser : onlineUsers) {
                             System.out.println("用户: " + onlineUser);
                         }
-                        break;
+                    }
+                    case MessageType.MESSAGE_COMM_MES -> {
+                        System.out.println("有人私聊你啦！" + message.getSender() + " 对你说: " + message.getContent());
+                    }
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);

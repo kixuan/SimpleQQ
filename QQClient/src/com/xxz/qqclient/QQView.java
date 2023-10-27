@@ -1,5 +1,6 @@
 package com.xxz.qqclient;
 
+import com.xxz.qqclient.service.MessageClientService;
 import com.xxz.qqclient.service.UserClientService;
 import com.xxz.qqclient.utils.Utility;
 
@@ -13,6 +14,7 @@ public class QQView {
 
     private String key = ""; // 接收用户的键盘输入
     private UserClientService userClientService = new UserClientService();//对象是用于登录服务/注册用户
+    private MessageClientService messageClientService = new MessageClientService();//对象是用于登录服务/注册用户
 
 
     public static void main(String[] args) {
@@ -31,12 +33,11 @@ public class QQView {
 
                 //根据用户的输入，来处理不同的逻辑
                 switch (key) {
-                    case "1":
+                    case "1" -> {
                         System.out.print("请输入用户号: ");
                         String userId = Utility.readString(50);
                         System.out.print("请输入密  码: ");
                         String pwd = Utility.readString(50);
-
                         if (userClientService.checkUser(userId, pwd)) {
                             System.out.println("===========欢迎 (用户 " + userId + " 登录成功) ===========");
                             //进入到二级菜单
@@ -51,6 +52,14 @@ public class QQView {
                                 key = Utility.readString(1);
                                 switch (key) {
                                     case "1" -> userClientService.onlineFriendList();
+                                    case "3" -> {
+                                        System.out.print("请输入想聊天的用户号(在线): ");
+                                        String getterId = Utility.readString(10);
+                                        System.out.print("请输入想说的话: ");
+                                        String content = Utility.readString(100);
+                                        //编写一个方法，将消息发送给服务器端
+                                        messageClientService.sendMessageToOne(content, userId, getterId);
+                                    }
                                     case "9" -> {
                                         //调用方法，给服务器发送一个退出系统的message
                                         userClientService.logout();
@@ -61,8 +70,8 @@ public class QQView {
                         } else { //登录服务器失败
                             System.out.println("=========登录失败=========");
                         }
-                        break;
-
+                    }
+                    case "9" -> loop = false;
                 }
             }
         }

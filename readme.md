@@ -26,7 +26,7 @@
 
 ![image-20231027150731286](https://cdn.jsdelivr.net/gh/kixuan/PicGo/images/image-20231027150731286.png)
 
-## 拉取在线登录用户
+## 拉取在线用户
 
 【客户端】
 
@@ -55,7 +55,7 @@
    2. 添加add方法和get方法
    3. 添加getOnlineUser方法遍历获取在线用户
 
-## 退出系统
+## 无异常退出系统
 
 首先分析一下原因：之前的退出只是退出main方法，还有一个线程ClientConnectServerThread在继续运行，所以整个进程是没有退出的
 
@@ -103,3 +103,7 @@
     1. 根据接收到的message获取getter的id及对应线程（使用ManageClientThreads啦）
 
     2. 得到对应socket的对象输出流，将message对象转发给指定的客户端
+
+## 群聊
+
+和私聊没什么区别，群发的话就先调用一下getOnlineUser获取所有在线user，再遍历一下发送客户端message就好

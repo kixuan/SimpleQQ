@@ -52,12 +52,16 @@ public class QQView {
                                 key = Utility.readString(1);
                                 switch (key) {
                                     case "1" -> userClientService.onlineFriendList();
+                                    case "2" -> {
+                                        System.out.println("你想要群发的话是：");
+                                        String content = Utility.readString(100);
+                                        messageClientService.sendMessageToAll(content, userId);
+                                    }
                                     case "3" -> {
                                         System.out.print("请输入想聊天的用户号(在线): ");
                                         String getterId = Utility.readString(10);
                                         System.out.print("请输入想说的话: ");
                                         String content = Utility.readString(100);
-                                        //编写一个方法，将消息发送给服务器端
                                         messageClientService.sendMessageToOne(content, userId, getterId);
                                     }
                                     case "9" -> {

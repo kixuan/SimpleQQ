@@ -28,7 +28,7 @@ public class ServerConnectClientThread extends Thread {
 
     @Override
     public void run() {
-
+        String onlineUser = "";
         label:
         while (true) {
             System.out.println("this is 服务端线程，正在和" + userId + "保持通信...");
@@ -41,7 +41,7 @@ public class ServerConnectClientThread extends Thread {
                 switch (message.getMesType()) {
                     // 显示在线列表用户信息
                     case MessageType.MESSAGE_GET_ONLINE_FRIEND:
-                        String onlineUser = ManageClientThreads.getOnlineUser();
+                        onlineUser = ManageClientThreads.getOnlineUser();
                         // 构建message把这个返回给客户端
                         Message message2 = new Message();
                         message2.setMesType(MessageType.MESSAGE_RET_ONLINE_FRIEND);
@@ -68,6 +68,22 @@ public class ServerConnectClientThread extends Thread {
                         // 得到对应socket的对象输出流，将message对象转发给指定的客户端
                         ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
                         oos.writeObject(message);
+                        break;
+
+                    // 群发
+                    case MessageType.MESSAGE_TO_ALL_MES:
+                        System.out.println(userId + "【群发】");
+                        String[] onlineUsers = ManageClientThreads.getOnlineUser().split(" ");
+                        for (String user : onlineUsers) {
+                            // 排除群发消息的这个用户
+                            if (!user.equals(message.getSender())) {
+                                // 根据message获取getter的id及对应线程
+                                serverConnectClientThread = ManageClientThreads.getClientConnectServerThread(user);
+                                // 得到对应socket的对象输出流，将message对象转发给指定的客户端
+                                ObjectOutputStream oos2 = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                                oos2.writeObject(message);
+                            }
+                        }
                         break;
 
                     //  退出系统

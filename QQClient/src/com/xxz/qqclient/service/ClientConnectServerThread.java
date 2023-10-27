@@ -25,7 +25,7 @@ public class ClientConnectServerThread extends Thread {
     @Override
     public void run() {
         while (true) {
-            System.out.println("this is 【客户端】：处理服务器返回的消息线程");
+            // System.out.println("this is 【客户端】：处理服务器返回的消息线程");
             try {
                 // 1. 这个时候我们已经把User对象传到服务端了，要读取从服务器端回复的Message对象
                 ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -41,9 +41,10 @@ public class ClientConnectServerThread extends Thread {
                             System.out.println("用户: " + onlineUser);
                         }
                     }
-                    case MessageType.MESSAGE_COMM_MES -> {
-                        System.out.println("有人私聊你啦！" + message.getSender() + " 对你说: " + message.getContent());
-                    }
+                    case MessageType.MESSAGE_COMM_MES ->
+                            System.out.println("有人私聊你啦！\n" + message.getSender() + " 对你说: " + message.getContent());
+                    case MessageType.MESSAGE_TO_ALL_MES ->
+                            System.out.println("有人群发消息啦！\n" + message.getSender() + " 对大家说: " + message.getContent());
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);

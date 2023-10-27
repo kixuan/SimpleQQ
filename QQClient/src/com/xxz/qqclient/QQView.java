@@ -50,19 +50,19 @@ public class QQView {
                                 System.out.print("请输入你的选择: ");
                                 key = Utility.readString(1);
                                 switch (key) {
-                                    case "1":
-                                        userClientService.onlineFriendList();
-                                        break;
+                                    case "1" -> userClientService.onlineFriendList();
+                                    case "9" -> {
+                                        //调用方法，给服务器发送一个退出系统的message
+                                        userClientService.logout();
+                                        loop = false;
+                                    }
                                 }
                             }
                         } else { //登录服务器失败
                             System.out.println("=========登录失败=========");
                         }
                         break;
-                    case "9":
-                        loop = false;
-                        System.out.println("退出二级菜单");
-                        break;
+
                 }
             }
         }

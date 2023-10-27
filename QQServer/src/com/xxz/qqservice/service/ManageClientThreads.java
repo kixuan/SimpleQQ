@@ -38,4 +38,8 @@ public class ManageClientThreads {
         }
         return onlineUserList.toString();
     }
+
+    public static void removeServerConnectClientThread(String userId) {
+        hm.remove(userId);
+    }
 }

@@ -20,12 +20,12 @@ public class QQServer {
     private static ConcurrentHashMap<String, User> validUsers = new ConcurrentHashMap<>();
 
     static { //在静态代码块，初始化 validUsers
-        validUsers.put("100", new User("100", "123456"));
-        validUsers.put("200", new User("200", "123456"));
-        validUsers.put("300", new User("300", "123456"));
-        validUsers.put("xxz", new User("xxz", "123456"));
-        validUsers.put("QQ", new User("QQ", "123456"));
-        validUsers.put("小马", new User("小马", "123456"));
+        validUsers.put("123", new User("123", "123123"));
+        validUsers.put("200", new User("200", "123123"));
+        validUsers.put("300", new User("300", "123123"));
+        validUsers.put("xxz", new User("xxz", "123123"));
+        validUsers.put("QQ", new User("QQ", "123123"));
+        validUsers.put("小马", new User("小马", "123123"));
     }
 
     //验证用户是否有效的方法

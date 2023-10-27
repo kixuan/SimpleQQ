@@ -77,4 +77,30 @@ public class UserClientService {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 退出系统
+     */
+    public void logout() {
+        //new一个Message , 告诉服务器我们想要退出系统
+        Message message = new Message();
+        message.setMesType(MessageType.MESSAGE_CLIENT_EXIT);
+        message.setSender(user.getUserId());
+
+        // 发送消息
+        try {
+            //从管理线程的集合中，通过userId, 得到这个线程对象
+            ClientConnectServerThread clientConnectServerThread = ManageClientConnectServerThread.getClientConnectServerThread(user.getUserId());
+            //通过这个线程得到关联的socket
+            Socket socket = clientConnectServerThread.getSocket();
+
+            // 向服务端发送消息
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.writeObject(message);
+            //退出系统
+            System.exit(0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

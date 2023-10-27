@@ -26,6 +26,8 @@ public class ServerConnectClientThread extends Thread {
 
     @Override
     public void run() {
+
+        label:
         while (true) {
             System.out.println("this is 服务端线程，正在和" + userId + "保持通信...");
             try {
@@ -46,7 +48,19 @@ public class ServerConnectClientThread extends Thread {
                         // 返回给客户端
                         ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                         objectOutputStream.writeObject(message2);
-                        System.out.println(userId + "需要在线用户列表，服务端返回成功");
+                        System.out.println(userId + "需要【在线用户列表】，服务端返回成功");
+                        break;
+
+                    case MessageType.MESSAGE_CLIENT_EXIT:
+                        System.out.println(userId + " 【退出系统】");
+                        // 从集合中删除该线程
+                        ManageClientThreads.removeServerConnectClientThread(userId);
+                        // 注意这个socket关闭的就是这个线程的socket
+                        socket.close();
+                        // 退出线程（退出while）
+                        break label;
+                    default:
+                        System.out.println("其他类型的message , 暂时不处理");
                         break;
                 }
             } catch (Exception e) {

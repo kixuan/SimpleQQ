@@ -54,3 +54,27 @@
    1. 创建HashMap，userId作key，线程管理类ServerConnectClientThread作value
    2. 添加add方法和get方法
    3. 添加getOnlineUser方法遍历获取在线用户
+
+## 退出系统
+
+首先分析一下原因：之前的退出只是退出main方法，还有一个线程ClientConnectServerThread还在继续运行，所以整个进程是没有退出的
+
+所以现在我们就要在客户端调用System.exit(0)退出，同时告诉服务端那哪个线程退出了（easy啦( •̀ ω •́ )y
+
+![image-20231027191718649](https://cdn.jsdelivr.net/gh/kixuan/PicGo/images/image-20231027191718649.png)
+
+【客户端】
+
+1. QQView增加switch分支处理MESSAGE_CLIENT_EXIT
+2. userClientService添加logout方法
+   1. 和服务端发条消息
+   2. 调用System.exit(0)退出
+
+【服务端】
+
+1. ServerConnectClientThread添加switch分支处理MESSAGE_CLIENT_EXIT
+
+   1. 从集合ManageClientThreads中删除该线程
+   2. 关闭socket
+
+2. ManageClientThreads添加删除线程方法

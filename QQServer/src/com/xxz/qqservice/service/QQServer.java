@@ -39,6 +39,8 @@ public class QQServer {
 
     public QQServer() {
         System.out.println("服务端启动！9999端口...");
+        // 启动推送新闻的线程
+        new Thread(new SendNewsToAllService()).start();
         try {
             ServerSocket serverSocket = new ServerSocket(9999);
 

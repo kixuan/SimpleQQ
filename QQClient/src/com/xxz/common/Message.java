@@ -25,4 +25,10 @@ public class Message implements Serializable {
     private String content;//消息内容
     private String sendTime;//发送时间
 
+    //进行扩展 和文件相关的成员
+    private byte[] fileBytes;
+    private int fileLen = 0;
+    private String dest; //文件传输路径
+    private String src; //源文件路径
+
 }

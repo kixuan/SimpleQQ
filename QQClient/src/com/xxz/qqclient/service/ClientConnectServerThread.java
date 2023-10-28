@@ -4,6 +4,7 @@ import com.xxz.common.Message;
 import com.xxz.common.MessageType;
 import lombok.Getter;
 
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
@@ -40,6 +41,14 @@ public class ClientConnectServerThread extends Thread {
                         for (String onlineUser : onlineUsers) {
                             System.out.println("用户: " + onlineUser);
                         }
+                    }
+                    case MessageType.MESSAGE_FILE_MES -> {
+                        System.out.println("有人给你发文件啦！\n" + message.getSender() + " 给你发文件到你的电脑的目录 " + message.getDest());
+                        //TODO 取出message的文件字节数组，通过文件输出流写出到磁盘
+                        FileOutputStream fileOutputStream = new FileOutputStream(message.getDest(), true);
+                        fileOutputStream.write(message.getFileBytes());
+                        fileOutputStream.close();
+                        System.out.println("保存文件成功~");
                     }
                     case MessageType.MESSAGE_COMM_MES ->
                             System.out.println("有人私聊你啦！\n" + message.getSender() + " 对你说: " + message.getContent());

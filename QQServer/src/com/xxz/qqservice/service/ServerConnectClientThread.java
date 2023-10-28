@@ -86,6 +86,22 @@ public class ServerConnectClientThread extends Thread {
                         }
                         break;
 
+                    //  发送文件
+                    case MessageType.MESSAGE_FILE_MES:
+                        System.out.println(userId + "对" + message.getGetter() + "【发送文件】");
+                        // 然后就要把这条消息转给getter服务器端的socket
+                        // 根据message获取getter的id及对应线程
+                        serverConnectClientThread = ManageClientThreads.getClientConnectServerThread(message.getGetter());
+                        // 如果该线程不存在，则给出提示
+                        if (serverConnectClientThread == null) {
+                            System.out.println(message.getGetter() + "不在线，离线留言功能暂未实现");
+                            break;
+                        }
+                        // 得到对应socket的对象输出流，将message对象转发给指定的客户端
+                        oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                        oos.writeObject(message);
+                        break;
+
                     //  退出系统
                     case MessageType.MESSAGE_CLIENT_EXIT:
                         System.out.println(userId + " 【退出系统】");

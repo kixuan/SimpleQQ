@@ -107,3 +107,32 @@
 ## 群聊
 
 和私聊没什么区别，群发的话就先调用一下getOnlineUser获取所有在线user，再遍历一下发送客户端message就好
+
+## 发文件
+
+【难点好像就在于字节数据那一块】
+
+![image-20231027211215732](https://cdn.jsdelivr.net/gh/kixuan/PicGo/images/image-20231027211215732.png)
+
+【客户端】
+
+1. 扩展message字段，新增文件相关字段（fileBytes、fileLen、dest、src）
+2. 新增FileClientService类，新增sendFileToOne方法
+   1. 构建message
+   2. 把文件读取到字节数组中
+   3. 发送给服务端
+3. ClientConnectServerThread添加switch分支处理MESSAGE_FILE_MES，保存文件
+4. QQView添加switch分支处理MESSAGE_FILE_MES，实现sendFileToOne方法
+
+【服务端】
+
+1. ServerConnectClientThread添加switch分支处理MESSAGE_FILE_MES
+
+1. 根据接收到的message获取getter的id及对应线程（使用ManageClientThreads啦）
+
+2. 得到对应socket的对象输出流，将message对象转发给指定的客户端
+
+## 推送新闻
+
+## 离线留言/发文件
+

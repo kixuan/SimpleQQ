@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+
 /**
  * @author kixuan
  * @version 1.0
@@ -62,7 +63,8 @@ public class ServerConnectClientThread extends Thread {
                         ServerConnectClientThread serverConnectClientThread = ManageClientThreads.getClientConnectServerThread(message.getGetter());
                         // 如果该线程不存在，则给出提示
                         if (serverConnectClientThread == null) {
-                            System.out.println(message.getGetter() + "不在线，离线留言功能暂未实现");
+                            System.out.println(message.getGetter() + "不在线，将在登陆后接收到这条私聊");
+                            OffLineMessageService.addOfflineMap(message);
                             break;
                         }
                         // 得到对应socket的对象输出流，将message对象转发给指定的客户端

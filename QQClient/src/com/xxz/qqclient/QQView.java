@@ -13,7 +13,6 @@ import com.xxz.qqclient.utils.Utility;
 public class QQView {
     private boolean loop = true; //控制是否显示菜单
 
-    private String key = ""; // 接收用户的键盘输入
     private UserClientService userClientService = new UserClientService();//对象是用于登录服务/注册用户
     private MessageClientService messageClientService = new MessageClientService();//对象是用于登录服务/注册用户
     private FileClientService fileClientService = new FileClientService();//对象是用于登录服务/注册用户
@@ -31,7 +30,8 @@ public class QQView {
                 System.out.println("1 登录系统");
                 System.out.println("9 退出系统");
                 System.out.print("请输入你的选择: ");
-                key = Utility.readString(1);
+                // 接收用户的键盘输入
+                String key = Utility.readString(1);
 
                 //根据用户的输入，来处理不同的逻辑
                 switch (key) {

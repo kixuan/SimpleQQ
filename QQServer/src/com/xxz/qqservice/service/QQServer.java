@@ -10,9 +10,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.xxz.qqservice.service.OffLineMessageService.offlineMap;
+
 /**
  * @author kixuan
  * @version 1.0
+ * 只处理登录请求
  */
 public class QQServer {
 
@@ -55,17 +58,25 @@ public class QQServer {
                 //2.1 先得到socket关联的对象输出流
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                 Message message = new Message();
-
-                if (checkUser(user.getUserId(), user.getPassword())) {
+                String userId = user.getUserId();
+                if (checkUser(userId, user.getPassword())) {
                     // 3. 登录成功，返回相关的消息
-                    System.out.println(user.getUserId() + " 登录成功！");
+                    System.out.println(userId + " 登录成功！");
                     message.setMesType(MessageType.MESSAGE_LOGIN_SUCCEED);
                     objectOutputStream.writeObject(message);
                     // 4. 创建线程和客户端保持通信
-                    ServerConnectClientThread serverConnectClientThread = new ServerConnectClientThread(socket, user.getUserId());
+                    ServerConnectClientThread serverConnectClientThread = new ServerConnectClientThread(socket, userId);
                     serverConnectClientThread.start();
                     // 5. 将线程放入到集合管理，方便后期获取用户列表、发送消息等
-                    ManageClientThreads.addClientThread(user.getUserId(), serverConnectClientThread);
+                    ManageClientThreads.addClientThread(userId, serverConnectClientThread);
+
+                    // 读取是否有留言
+                    if (offlineMap.containsKey(userId)) {
+                        boolean success = OffLineMessageService.sendOfflineMessage(userId, offlineMap);
+                        if (success) {
+                            OffLineMessageService.deleteOfflineMessage(userId);
+                        }
+                    }
                 } else {
                     // 5. 登录失败，返回相关的消息
                     message.setMesType(MessageType.MESSAGE_LOGIN_FAIL);

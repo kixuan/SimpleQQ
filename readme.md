@@ -146,4 +146,21 @@
 
 ## 离线留言/发文件
 
-【再新建一个线程专门用于存放离线信息】
+【思路：再新建一个线程专门用于存放离线信息】
+
+【服务端】
+
+1. 新建一个OffLineMessageService专门处理离线消息
+
+   1. 这个类和ManageClientThreads很像，用ConcurrentHashMap存放消息
+   2. 添加set、add、send、remove方法
+2. ServerConnectClientThread：在发送消息的时候如果不在线就放进map里面
+3. QQServer：添加读取是否有留言代码
+
+【文件同理，懒得写了】
+
+question：
+
+为什么读取只能放在QQserver里面，放在QQView里面的话根本读取不到
+
+初步猜测原因是offlineMap的数据是只在服务端有，客户端没有数据，∴当然也不能在客户端处理。
